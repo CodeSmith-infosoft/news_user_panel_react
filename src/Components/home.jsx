@@ -33,7 +33,7 @@ function PrevArrow({ onClick }) {
   );
 }
 
-const BASE_URL = "https://news-backend-node-js.onrender.com" || "http://localhost:5000";
+const BASE_URL = "https://news-backend-node.onrender.com" || "http://localhost:5000";
 // const BASE_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
 const Home = () => {

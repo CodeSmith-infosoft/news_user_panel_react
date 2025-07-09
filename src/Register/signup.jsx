@@ -7,7 +7,7 @@ import emailimg from "../../src/images/contact-form.png";
 import { useAuth } from "../Context/authContext";
 
 // Better fallback logic
-const BASE_URL =  "https://news-backend-node-js.onrender.com" || "http://localhost:5000";
+const BASE_URL =  "https://news-backend-node.onrender.com" || "http://localhost:5000";
 
 const Signup = () => {
   const navigate = useNavigate();

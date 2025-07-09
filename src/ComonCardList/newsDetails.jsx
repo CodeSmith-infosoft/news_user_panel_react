@@ -4,7 +4,7 @@ import axios from "axios";
 import icon from "../../src/images/Icon_1.png";
 import AdSenseAd from "../Components/AdSenseAd.jsx";
 
-const BASE_URL = "https://news-backend-node-js.onrender.com" || "http://localhost:5000";
+const BASE_URL = "https://news-backend-node.onrender.com" || "http://localhost:5000";
 
 const NewsDetails = () => {
   const location = useLocation();
@@ -28,7 +28,7 @@ const NewsDetails = () => {
         const response = await axios.get(`${BASE_URL}/news/CategoryWisenews`, { headers: { Authorization: localStorage.getItem("token"), } }, { userId });
         if (response.data.categoryWiseNews) {
           setStories(response.data.categoryWiseNews);
-        } else if (response?.data?.status == 401) {
+        } else if (response?.data?.status === 401) {
           setMessage("Your session has expired. Please log in again to continue.");
           navigate("/login");
           localStorage.removeItem("token");
@@ -45,7 +45,7 @@ const NewsDetails = () => {
 
     fetchCategoryNews();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (newsData && stories.length > 0) {
@@ -83,7 +83,7 @@ const NewsDetails = () => {
 
         if (response.data && response.data.categoryTagAndNewsWiseNews) {
           setNewsData(response.data.categoryTagAndNewsWiseNews[0]);
-        } else if (response?.data?.status == 401) {
+        } else if (response?.data?.status === 401) {
           setMessage("Your session has expired. Please log in again to continue.");
           navigate("/login");
           localStorage.removeItem("token");
@@ -95,7 +95,7 @@ const NewsDetails = () => {
     };
 
     fetchData();
-  }, [story]);
+  }, [story, categoryId, id, navigate,newsId, tagId, ]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -133,209 +133,189 @@ const NewsDetails = () => {
   };
 
   return (
-    <div>
-      {message && (
-        <div severity="info" className="mb-4">
-          {message}
-        </div>
-      )}
-      <div className="my-36">
-        <div className="grid justify-center items-center w-full px-4 mx-auto  sm:w-full md:w-full xl:w-[80%]">
-          <div className={isAdVisible ? "flex justify-center items-center pb-9" : "flex justify-center items-center"}>
-            <AdSenseAd width="1500px" height="60px" onLoad={(success) => setIsAdVisible(success)} />
-          </div>
-          <div className="grid lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-6 h-fits">
-            <div className="lg:col-span-3 col-span-4">
-              {newsData ? (
-                <>
-                  <p
-                    onClick={() =>
-                      navigate(
-                        `/category/${encodeURIComponent(
-                          newsData.categoryDetails.category
-                        )}`
-                      )
-                    }
-                    className="text-white uppercase cursor-pointer bg-[#4360ac] rounded-sm mb-3 w-fit px-3 grid justify-center items-center mx-auto "
-                  >
-                    {newsData.categoryDetails.category}
-                  </p>
-                  <h1 className="text-4xl font-bold mb-3">
-                    {newsData.title}
-                  </h1>
-                  <p className="text-gray-700 text-end pb-4 text-sm">
-                    {new Date(newsData.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <img
-                    src={`${BASE_URL}/${newsData.heroimage?.replace(/\\/g, "/")}`}
-                    alt={newsData.title}
-                    className="rounded-lg w-full  object-cover mb-4"
-                  />
+    <div className="my-20 px-4">
+  {message && (
+    <div className="mb-4 text-red-600 text-sm font-medium text-center">{message}</div>
+  )}
 
-                  <div className="rounded-md bg-blue-50 p-4 my-5">
-                    <h1 className="text-[#4360ac] font-bold text-3xl">Summary</h1>
-                    <ul className="list-disc list-outside grid gap-6 px-4 py-2 text-xl marker:text-[#4360ac] font-normal">
-                      {newsData.summary.map((item, index) => (
-                        <li key={index} className="text-gray-500 text-base py-1">
-                          {truncateText(item.text)}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+  <div className="max-w-7xl mx-auto">
+    {/* Top Ad */}
+    <div className={`flex justify-center items-center ${isAdVisible ? "pb-9" : ""}`}>
+      <AdSenseAd width="100%" height="60px" onLoad={(success) => setIsAdVisible(success)} />
+    </div>
 
-                  <div className="space-y-4">
-                    <h2 className="text-2xl font-bold">{newsData.heading}</h2>
-                    <p className="text-gray-700 text-lg">
-                      {newsData.content_1.map((item, index) => (
-                        <p key={index} className="py-2">
-                          {truncateText(item.text)}
-                        </p>
-                      ))}
-                    </p>
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-10">
+      {/* Main Content */}
+      <div className="lg:col-span-3">
+        {newsData ? (
+          <>
+            <p
+              onClick={() =>
+                navigate(
+                  `/category/${encodeURIComponent(
+                    newsData.categoryDetails.category
+                  )}`
+                )
+              }
+              className="text-white uppercase cursor-pointer bg-[#4360ac] rounded-sm mb-3 w-fit px-3 py-1 mx-auto lg:mx-0 text-sm"
+            >
+              {newsData.categoryDetails.category}
+            </p>
 
-                    {newsData.image_2 && (
-                      <img
-                        src={`${BASE_URL}/${newsData.image_2?.replace(
-                          /\\/g,
-                          "/"
-                        )}`}
-                        alt={newsData.title}
-                        className="rounded-lg w-full  object-cover my-4"
-                      />
-                    )}
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-center lg:text-left">
+              {newsData.title}
+            </h1>
 
-                    <p className="text-gray-700 text-lg">
-                      {newsData.content_2.map((item, index) => (
-                        <p key={index} className="py-2">
-                          {truncateText(item.text)}
-                        </p>
-                      ))}
-                    </p>
+            <p className="text-gray-700 text-end text-sm mb-4">
+              {new Date(newsData.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
 
-                    {newsData.image_3 && (
-                      <img
-                        src={`${BASE_URL}/${newsData.image_3?.replace(
-                          /\\/g,
-                          "/"
-                        )}`}
-                        alt={newsData.title}
-                        className="rounded-lg w-full  object-cover my-4"
-                      />
-                    )}
-                    <p className="text-gray-700 text-lg">
-                      {newsData.content_3.map((item, index) => (
-                        <p key={index} className="py-2">
-                          {truncateText(item.text)}
-                        </p>
-                      ))}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <div className="w-10 h-10 mx-auto flex items-center justify-center">
-                  <img src={icon} alt="" className=" slow-spin" />
-                </div>
-              )}
-              <div className={isAdVisible ? "flex justify-center items-center pb-9" : "flex justify-center items-center"}>
-                <AdSenseAd width="1120px" height="60px" onLoad={(success) => setIsAdVisible(success)} />
-              </div>
+            <img
+              src={`${BASE_URL}/${newsData.heroimage?.replace(/\\/g, "/")}`}
+              alt={newsData.title}
+              className="w-full max-h-[450px] object-cover rounded-lg mb-6"
+            />
+
+            {/* Summary */}
+            <div className="rounded-md bg-blue-50 p-4 my-5">
+              <h1 className="text-[#4360ac] font-bold text-xl md:text-2xl">Summary</h1>
+              <ul className="list-disc px-4 py-2 text-base marker:text-[#4360ac] font-normal space-y-2">
+                {newsData.summary.map((item, idx) => (
+                  <li key={idx} className="text-gray-600">{truncateText(item.text)}</li>
+                ))}
+              </ul>
             </div>
 
-            <div className="lg:col-span-1 col-span-2 bg-white border border-gray-200 p-2 sticky top-32 w-full rounded-xl max-h-[calc(126vh-150px)] overflow-y-auto">
-              <h1 className="font-extrabold text-2xl  mt-2 mb-5">
-                Trending Stories
-              </h1>
-              <div className={isAdVisible ? "flex justify-center items-center" : "flex justify-center items-center"}>
-                <AdSenseAd width="400px" height="90px" onLoad={(success) => setIsAdVisible(success)} />
-              </div>
-              {loading ? (
-                <div className="w-10 my-20 h-10 mx-auto flex items-center justify-center">
-                  <img src={icon} alt="" className=" slow-spin" />
-                </div>
-              ) : (
-                trendingStories.map((item, index) => (
-                  <React.Fragment key={item._id}>
-                    <div>
-                      <a
-                        onClick={() => handlenavigate(item)}
-                        className="flex flex-col items-center py-1 bg-white shadow-sm md:flex-row md:max-w-xl border-b-2 border-gray-200"
-                      >
-                        <img
-                          className="object-cover flex-shrink-0 w-24 h-20 md:w-24 md:h-20 rounded-t-lg md:rounded-none md:rounded-s-lg"
-                          src={`${BASE_URL}/${item.heroimage?.replace(/\\/g, "/")}`}
-                          alt={item.heading}
-                        />
-                        <p className="cursor-pointer mb-3 font-bold text-base sm:text-sm md:text-sm lg:text-sm xl:text-sm px-2 py-2 text-black">
-                          {truncateText(item?.title, 45)}
-                        </p>
-                      </a>
-                    </div>
-                  </React.Fragment>
-                ))
+            {/* Full Content */}
+            <div className="space-y-4 text-gray-800">
+              <h2 className="text-xl font-bold">{newsData.heading}</h2>
+              {newsData.content_1.map((item, index) => (
+                <p key={index}>{truncateText(item.text)}</p>
+              ))}
+
+              {newsData.image_2 && (
+                <img
+                  src={`${BASE_URL}/${newsData.image_2?.replace(/\\/g, "/")}`}
+                  alt={newsData.title}
+                  className="w-full max-h-[400px] object-cover rounded-lg my-4"
+                />
               )}
-              <div className={isAdVisible ? "flex justify-center items-center" : "flex justify-center items-center"}>
-                <AdSenseAd width="400px" height="90px" onLoad={(success) => setIsAdVisible(success)} />
-              </div>
+
+              {newsData.content_2.map((item, index) => (
+                <p key={index}>{truncateText(item.text)}</p>
+              ))}
+
+              {newsData.image_3 && (
+                <img
+                  src={`${BASE_URL}/${newsData.image_3?.replace(/\\/g, "/")}`}
+                  alt={newsData.title}
+                  className="w-full max-h-[400px] object-cover rounded-lg my-4"
+                />
+              )}
+
+              {newsData.content_3.map((item, index) => (
+                <p key={index}>{truncateText(item.text)}</p>
+              ))}
             </div>
+
+            {/* Bottom Ad */}
+            <div className={`flex justify-center items-center mt-8 ${isAdVisible ? "pb-9" : ""}`}>
+              <AdSenseAd width="100%" height="60px" onLoad={(success) => setIsAdVisible(success)} />
+            </div>
+          </>
+        ) : (
+          <div className="w-10 h-10 mx-auto my-20 flex items-center justify-center">
+            <img src={icon} alt="Loading..." className="animate-spin" />
           </div>
-          <hr className=" mt-3 hidden lg:grid " />
-          <div className="slider-container  sm:w-full hidden lg:grid lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-6 justify-between md:w-full xl:w-full mx-auto">
-            {loading ? (
-              <div className="w-10 my-20 h-10 mx-auto flex items-center justify-center">
-                <img src={icon} alt="" className=" slow-spin" />
-                <p className="mt-5 text-[#4360ac] font-extrabold text-base">
-                  Loading...
-                </p>
-              </div>
-            ) : (
-              trendingStories.slice(0, 4).map((val) => (
-                <div
-                  key={val._id}
-                  onClick={() => handlenavigate(val)}
-                  className="relative grid justify-center col-span-1 mx-auto m-5 h-[370px] bg-white border border-gray-200 rounded-xl shadow-md transition-all duration-500 ease-in-out transform hover:scale-105 hover:shadow-2xl group"
-                >
-                  <a className="w-full relative mx-auto h-[180px] overflow-hidden rounded-t-lg">
-                    <img
-                      className="rounded-t-xl w-full h-full object-cover"
-                      src={`${BASE_URL}/${val.heroimage?.replace(/\\/g, "/")}`}
-                      alt={val.heading}
-                    />
-                  </a>
-                  <div className="p-5">
-                    <h5 className="mb-2 text-xs tracking-tight text-gray-600 transition-colors duration-300">
-                      {new Date(val.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </h5>
-                    <p className="line-clamp-2 mb-3 font-medium text-black group-hover:font-bold transition-all duration-300">
-                      {val?.title}
-                    </p>
-                    <a
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlenavigatetag(
-                          val?.tagDetails?._id,
-                          newsData.categoryDetails._id
-                        );
-                      }}
-                      className=" cursor-pointer inline-flex uppercase relative items-center px-2 text-[10px] font-medium text-[#4360ac] bg-blue-100 rounded-sm transition-all duration-300 ease-in-out hover:bg-[#4360ac] hover:text-white shadow hover:shadow-lg"
-                    >
-                      {val.tagDetails.tag}
-                    </a>
-                  </div>
-                </div>
-              ))
-            )}
+        )}
+      </div>
+
+      {/* Sidebar */}
+      <div className="lg:col-span-1 bg-white border border-gray-200 p-4 rounded-xl sticky top-32 max-h-[calc(100vh-150px)] overflow-y-auto">
+        <h2 className="text-lg font-bold mb-4">Trending Stories</h2>
+        <AdSenseAd width="100%" height="90px" onLoad={(success) => setIsAdVisible(success)} />
+
+        {loading ? (
+          <div className="w-10 h-10 mx-auto my-10 flex items-center justify-center">
+            <img src={icon} alt="" className="animate-spin" />
           </div>
+        ) : (
+          trendingStories.map((item) => (
+            <div
+              key={item._id}
+              onClick={() => handlenavigate(item)}
+              className="flex flex-col sm:flex-row items-start gap-3 cursor-pointer border-b py-2"
+            >
+              <img
+                src={`${BASE_URL}/${item.heroimage?.replace(/\\/g, "/")}`}
+                alt={item.heading}
+                className="w-full sm:w-24 h-20 object-cover rounded-md"
+              />
+              <p className="text-sm font-semibold text-black">{truncateText(item?.title, 45)}</p>
+            </div>
+          ))
+        )}
+
+        <div className="flex justify-center mt-4">
+          <AdSenseAd width="100%" height="90px" onLoad={(success) => setIsAdVisible(success)} />
         </div>
       </div>
     </div>
+
+    {/* Bottom Related News Cards */}
+    <hr className="my-10 hidden lg:block" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+      {loading ? (
+        <div className="w-10 h-10 mx-auto my-10 flex items-center justify-center">
+          <img src={icon} alt="" className="animate-spin" />
+        </div>
+      ) : (
+        trendingStories.slice(0, 4).map((val) => (
+          <div
+            key={val._id}
+            onClick={() => handlenavigate(val)}
+            className="bg-white border rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
+          >
+            <img
+              src={`${BASE_URL}/${val.heroimage?.replace(/\\/g, "/")}`}
+              alt={val.heading}
+              className="w-full h-[180px] object-cover"
+            />
+            <div className="p-4">
+              <p className="text-xs text-gray-500 mb-2">
+                {new Date(val.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+              <p className="text-sm font-semibold text-black mb-2">
+                {val?.title}
+              </p>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlenavigatetag(
+                    val?.tagDetails?._id,
+                    newsData.categoryDetails._id
+                  );
+                }}
+                className="text-[10px] cursor-pointer text-blue-600 bg-blue-100 px-2 py-1 rounded hover:bg-blue-600 hover:text-white uppercase transition"
+              >
+                {val.tagDetails.tag}
+              </span>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+</div>
+
   );
 };
 

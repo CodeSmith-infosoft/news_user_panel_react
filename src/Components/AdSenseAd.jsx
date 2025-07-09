@@ -35,7 +35,7 @@ const AdSenseAd = ({ width = '100%', height, onLoad }) => {
     };
 
     tryLoadAd();
-  }, []);
+  }, [attempts, onLoad]);
 
   return (
     <ins
@@ -47,8 +47,8 @@ const AdSenseAd = ({ width = '100%', height, onLoad }) => {
         height,
         backgroundColor: '#f8f8f8',
       }}
-      data-ad-client="ca-google"
-      data-ad-slot="1234567890"
+      data-ad-client="ca-pub-3483903277708097"
+      data-ad-slot="1679296563"
       data-ad-format="auto"
       data-full-width-responsive="true"
     />

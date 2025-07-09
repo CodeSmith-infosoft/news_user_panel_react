@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import AdSenseAd from "../Components/AdSenseAd.jsx"; 
 
 
-const BASE_URL = "https://news-backend-node-js.onrender.com" || "http://localhost:5000";
+const BASE_URL = "https://news-backend-node.onrender.com" || "http://localhost:5000";
 
 
 const Tag = () => {

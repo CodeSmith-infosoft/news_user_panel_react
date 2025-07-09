@@ -5,7 +5,7 @@ import axios from "axios";
 import icon from "../../src/images/Icon_1.png";
 import { useNavigate } from "react-router";
 import AdSenseAd from "../Components/AdSenseAd.jsx"; 
-const BASE_URL = "https://news-backend-node-js.onrender.com" || "http://localhost:5000";
+const BASE_URL = "https://news-backend-node.onrender.com" || "http://localhost:5000";
 
 const LatestNews = () => {
   const navigate = useNavigate();
